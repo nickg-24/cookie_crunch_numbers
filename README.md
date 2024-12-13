@@ -18,4 +18,8 @@ Participants accessed the website to follow instructions displayed on an HTML pa
 
 At the end of the tasks, participants were redirected to a survey to provide feedback.
 
+
+# User Survey
+The post-task user survey and instruction PDFs are also included in this repository
+
 For more details about the study, refer to the research materials.
