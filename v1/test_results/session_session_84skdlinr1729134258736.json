@@ -1,0 +1,92 @@
+[
+    {
+        "sessionToken": "session_84skdlinr1729134258736",
+        "taskNumber": 1,
+        "taskCategory": "Cookie Creation",
+        "taskDuration": 14.5099999999999997868371792719699442386627197265625,
+        "userResponse": "",
+        "completed": false,
+        "correct": true
+    },
+    {
+        "sessionToken": "session_84skdlinr1729134258736",
+        "taskNumber": 2,
+        "taskCategory": "Cookie Reading",
+        "taskDuration": 11.6029999999999997584154698415659368038177490234375,
+        "userResponse": "true",
+        "completed": false,
+        "correct": true
+    },
+    {
+        "sessionToken": "session_84skdlinr1729134258736",
+        "taskNumber": 3,
+        "taskCategory": "Cookie Update",
+        "taskDuration": 11.231999999999999317878973670303821563720703125,
+        "userResponse": "",
+        "completed": false,
+        "correct": true
+    },
+    {
+        "sessionToken": "session_84skdlinr1729134258736",
+        "taskNumber": 4,
+        "taskCategory": "Cookie Deletion",
+        "taskDuration": 10.3589999999999999857891452847979962825775146484375,
+        "userResponse": "",
+        "completed": false,
+        "correct": true
+    },
+    {
+        "sessionToken": "session_84skdlinr1729134258736",
+        "taskNumber": 5,
+        "taskCategory": "Cookie Update",
+        "taskDuration": 9.8379999999999991899812812334857881069183349609375,
+        "userResponse": "",
+        "completed": true,
+        "correct": true
+    },
+    {
+        "sessionToken": "session_84skdlinr1729134258736",
+        "taskNumber": 1,
+        "taskCategory": "Cookie Creation",
+        "taskDuration": 22.571999999999999175770426518283784389495849609375,
+        "userResponse": "",
+        "completed": false,
+        "correct": true
+    },
+    {
+        "sessionToken": "session_84skdlinr1729134258736",
+        "taskNumber": 2,
+        "taskCategory": "Cookie Reading",
+        "taskDuration": 2.263999999999999790389892950770445168018341064453125,
+        "userResponse": "true",
+        "completed": false,
+        "correct": true
+    },
+    {
+        "sessionToken": "session_84skdlinr1729134258736",
+        "taskNumber": 3,
+        "taskCategory": "Cookie Update",
+        "taskDuration": 0.8289999999999999591437926937942393124103546142578125,
+        "userResponse": "",
+        "completed": false,
+        "correct": false
+    },
+    {
+        "sessionToken": "session_84skdlinr1729134258736",
+        "taskNumber": 4,
+        "taskCategory": "Cookie Deletion",
+        "taskDuration": 0.63800000000000001154631945610162802040576934814453125,
+        "userResponse": "",
+        "completed": false,
+        "correct": false
+    },
+    {
+        "sessionToken": "session_84skdlinr1729134258736",
+        "taskNumber": 5,
+        "taskCategory": "Cookie Update",
+        "taskDuration": 1.1100000000000000976996261670137755572795867919921875,
+        "userResponse": "",
+        "completed": true,
+        "correct": false
+    }
+]

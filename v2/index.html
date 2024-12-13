@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cookie Management Tasks</title>
+    <script src="tasks.js"></script>
+    <script>
+        let taskNumber = 0; // Start from Task 1
+        let startTime;      // Track task start time for timing
+        let totalTasks = tasks.length; // Total number of tasks
+
+        // Generate a session token to identify the user session (for anonymous tracking)
+        function generateSessionToken() {
+            return 'session_' + Math.random().toString(36).substr(2, 9) + Date.now();
+        }
+
+        // Store the session token when the page loads
+        let sessionToken = localStorage.getItem('sessionToken');
+        if (!sessionToken) {
+            sessionToken = generateSessionToken();
+            localStorage.setItem('sessionToken', sessionToken);
+        }
+
+        // Function to set initial cookies for reading, updating, and deleting tasks
+        function setInitialCookies(task) {
+            if (task.initialCookies) {
+                task.initialCookies.forEach(cookie => {
+                    let cookieString = `${cookie.name}=${cookie.value}; path=/`;
+                    document.cookie = cookieString;
+                });
+                console.log("Initial cookies set for task:", task.number);
+            }
+        }
+
+        // Function to load the current task after the user clicks "Start Task"
+        function loadTask() {
+            if (taskNumber >= 0 && taskNumber < totalTasks) {
+                const currentTask = tasks[taskNumber]; // Use taskNumber without incrementing yet
+                document.getElementById("landingPage").style.display = "none"; // Hide the landing page
+                document.getElementById("taskPage").style.display = "block"; // Show task instructions
+
+                document.getElementById("taskDescription").innerText = currentTask.description;
+                document.getElementById("taskCategory").innerText = currentTask.category;
+                document.getElementById("taskNumberDisplay").innerText = `Task ${taskNumber + 1} of ${totalTasks}`; // Show current task number
+
+                // Clear previous task inputs
+                document.getElementById("optionsContainer").innerHTML = "";
+
+                // Set initial cookies if the task requires them
+                setInitialCookies(currentTask);
+
+                // Load true/false options for reading tasks
+                if (currentTask.category === "Cookie Reading") {
+                    const trueOption = `<div><input type="radio" name="answer" value="true"> True</div>`;
+                    const falseOption = `<div><input type="radio" name="answer" value="false"> False</div>`;
+                    document.getElementById("optionsContainer").innerHTML = trueOption + falseOption;
+                    document.getElementById("cookieInputSection").style.display = "block"; // Show the input for reading tasks
+                } else {
+                    document.getElementById("cookieInputSection").style.display = "none"; // Hide the input for non-reading tasks
+                }
+
+                // Record the start time for timing the task
+                startTime = Date.now();
+            } else if (taskNumber >= totalTasks) {
+                showFinalPage(); // If all tasks are done, show the final page
+            }
+        }
+
+        // Function to submit task results
+        function submitTask() {
+            let endTime = Date.now();
+            let taskDuration = (endTime - startTime) / 1000; // Time in seconds
+
+            // Get user response for true/false tasks
+            let userResponse = document.querySelector('input[name="answer"]:checked') ? document.querySelector('input[name="answer"]:checked').value : null;
+
+            // Prepare task data to send to the backend
+            let taskData = {
+                sessionToken: sessionToken,   // Include the session token
+                taskNumber: taskNumber + 1,   // Send the correct task number for reporting
+                taskCategory: tasks[taskNumber].category,
+                taskDuration: taskDuration,
+                userResponse: userResponse || "", // Capture user's response if applicable
+                completed: (taskNumber === totalTasks - 1) // Check if all tasks are done
+            };
+
+            console.log(`Submitting task ${taskNumber + 1}:`, taskData); // Log the task number and task data
+
+            // Send task data to PHP backend
+            fetch('record_task.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(taskData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(`Task ${taskNumber + 1} data sent successfully:`, data);
+
+                taskNumber++; // Increment the task number after submission
+
+                if (taskNumber === totalTasks) {
+                    alert("All tasks completed!"); // Notify user that they finished all tasks
+                }
+
+                showLandingPage(); // Show the landing page for the next task
+            })
+            .catch(error => {
+                console.error(`Error sending task ${taskNumber + 1} data:`, error);
+            });
+        }
+
+        // Function to show the landing page between tasks
+        function showLandingPage() {
+            document.getElementById("taskPage").style.display = "none"; // Hide task instructions
+            document.getElementById("landingPage").style.display = "block"; // Show landing page
+
+            if (taskNumber === 0) {
+                // Show welcome message before the first task
+                document.getElementById("landingText").innerHTML = `
+                    <p>Thank you for participating in this study.</p>
+                    <p>${introduction}</p>
+                    <p>${disclaimer}</p>
+                    <p>Click 'Start' to begin Task 1.</p>
+                `;
+
+                document.getElementById("startButton").innerText = "Start Task 1";
+            } else if (taskNumber < totalTasks) {
+                // Show a message between tasks (next task number)
+                document.getElementById("landingText").innerText = `Click 'Start' to begin Task ${taskNumber + 1}.`;
+                document.getElementById("startButton").innerText = `Start Task ${taskNumber + 1}`;
+            } else {
+                showFinalPage(); // Show final page after all tasks
+            }
+        }
+
+        // Function to show the final page after all tasks are done
+        function showFinalPage() {
+            document.getElementById("landingPage").style.display = "block"; // Show landing page
+            document.getElementById("taskPage").style.display = "none"; // Hide task instructions
+
+            document.getElementById("landingText").innerText = "Thank you for participating. Please reach out to the team to get your reward.";
+            // add a tag to the final survey
+            document.getElementById("landingText").innerHTML += `<a href="https://rit.az1.qualtrics.com/jfe/form/SV_6ohaCJYhX1dLwDc" target="_blank">Please fill out the final survey here.</a>`;
+            
+
+            document.getElementById("startButton").style.display = "none"; // Hide the start button on the final page
+        }
+
+        // Initial page load
+        window.onload = function () {
+            showLandingPage(); // Start with the welcome/landing page
+        };
+    </script>
+</head>
+<body style="width: 30%;">
+    <!-- Landing Page -->
+    <div id="landingPage" style="display: none;">
+        <h2>Cookie Management Study</h2>
+        <p id="landingText"></p>
+        <button id="startButton" onclick="loadTask()">Start Task</button> <!-- No increment yet -->
+    </div>
+
+    <!-- Task Page -->
+    <div id="taskPage" style="display: none;">
+        <h2>Cookie Management Task</h2>
+        <p id="taskNumberDisplay"></p> <!-- Task number display -->
+        <p id="taskDescription"></p>
+        <p><strong>Category:</strong> <span id="taskCategory"></span></p>
+
+        <!-- True/False options for cookie reading tasks -->
+        <div id="cookieInputSection" style="display: none;">
+            <div id="optionsContainer"></div> <!-- Container for true/false options -->
+        </div>
+
+        <!-- Button to submit and go to the next task -->
+        <button id="nextButton" onclick="submitTask()">Submit & Next Task</button>
+    </div>
+</body>
+</html>
